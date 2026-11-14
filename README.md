@@ -28,13 +28,43 @@ Note the **seed**. Running again with the same seed gives you the same song.
 
 ### Windows: "running scripts is disabled on this system"
 
-If PowerShell refuses to run the script, allow it for the current window only:
+Windows blocks PowerShell scripts by default, so you may see this the first time:
+
+```
+./New-MidiSong.ps1 : File C:\scripts\midi\New-MidiSong.ps1 cannot be loaded because
+running scripts is disabled on this system.
+```
+
+That's PowerShell's **execution policy**, not a problem with the script. Use whichever of these three options suits you. None of them needs administrator rights.
+
+**Option 1: Bypass for a single run.** Put `powershell -ExecutionPolicy Bypass -File` in front of the usual command. Nothing changes on your system:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\New-MidiSong.ps1
+powershell -ExecutionPolicy Bypass -File .\New-MidiSong.ps1 -Progression Dm7,G7,Cmaj7,Cmaj7 -Tempo 120 -OutputPath jazz.mid
+```
+
+If you use PowerShell 7, start with `pwsh` instead of `powershell`. When you leave out `-OutputPath`, the `.mid` file is saved in the folder you're in.
+
+**Option 2: Bypass for the current window.** Run this once, and then the plain `./New-MidiSong.ps1` commands work until you close the window:
 
 ```powershell
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+./New-MidiSong.ps1 -Progression Dm7,G7,Cmaj7,Cmaj7 -Tempo 120 -OutputPath jazz.mid
 ```
 
-If you downloaded the file, you may also need `Unblock-File ./New-MidiSong.ps1`.
+**Option 3: Allow your own scripts permanently.** This is the setting most people use:
+
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+Unblock-File .\New-MidiSong.ps1
+```
+
+`RemoteSigned` runs scripts on your own computer but blocks downloaded ones unless they're signed. `Unblock-File` marks this downloaded script as trusted. Afterwards, `./New-MidiSong.ps1` works in every window.
+
+If Option 3 says the setting is *"overridden by a policy defined at a more specific scope"*, your computer's policy is managed by Group Policy (common on work PCs). Options 1 and 2 still work.
+
+To check your current settings, run `Get-ExecutionPolicy -List`.
 
 ---
 
@@ -66,6 +96,15 @@ If you downloaded the file, you may also need `Unblock-File ./New-MidiSong.ps1`.
 ./New-MidiSong.ps1 -Seed 48213 -Tempo 80
 ```
 
+The same examples with the execution policy bypassed, for when scripts are blocked (see [above](#windows-running-scripts-is-disabled-on-this-system)):
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\New-MidiSong.ps1 -Progression Am,F,C,G -Tempo 90 -Repeats 3 -OutputPath sad.mid
+powershell -ExecutionPolicy Bypass -File .\New-MidiSong.ps1 -Progression Dm7,G7,Cmaj7,Cmaj7 -Tempo 120 -OutputPath jazz.mid
+powershell -ExecutionPolicy Bypass -File .\New-MidiSong.ps1 -Progression C7,C7,C7,C7,F7,F7,C7,C7,G7,F7,C7,G7 -Repeats 1 -NoDrums
+powershell -ExecutionPolicy Bypass -File .\New-MidiSong.ps1 -Seed 48213 -Tempo 80
+```
+
 ### How the generator writes music
 
 - **Key.** The first chord sets the key. If it's a minor chord (`Am`, `Em7`…), the melody uses the minor scale; otherwise major.
@@ -83,6 +122,14 @@ Load the functions into your session with `-LibraryOnly`. Note the dot and space
 ```powershell
 . ./New-MidiSong.ps1 -LibraryOnly
 ```
+
+> **If scripts are blocked:** run `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass` first, then the line above. The single-run `powershell -ExecutionPolicy Bypass -File` form doesn't work here: it runs in a separate PowerShell that closes when it finishes, so the functions disappear with it.
+>
+> To bypass the policy and also run your own song script in one step, save your song code in a file such as `mysong.ps1` next to `New-MidiSong.ps1`. Start that file with `. "$PSScriptRoot\New-MidiSong.ps1" -LibraryOnly`, which finds the toolkit no matter which folder you run from. Then run:
+>
+> ```powershell
+> powershell -ExecutionPolicy Bypass -File .\mysong.ps1
+> ```
 
 Every song is built the same way:
 
@@ -312,6 +359,7 @@ On channel 9, use these note numbers:
 
 ## Troubleshooting
 
+- **"Running scripts is disabled on this system".** The execution policy is blocking scripts. Run with `powershell -ExecutionPolicy Bypass -File .\New-MidiSong.ps1`, or see [the options above](#windows-running-scripts-is-disabled-on-this-system).
 - **No sound when opening the file.** MIDI files contain notes, not audio, so the player provides the instrument sounds. Windows and macOS have built-in synths; on Linux, install a synth such as `timidity` or open the file in MuseScore.
 - **"Bad note name" / "Bad chord name".** Check the spelling: notes need an octave (`C4`, not `C`), and chord roots must be uppercase (`Am`, not `am`).
 - **"Unknown chord quality".** The suffix isn't in the chord table; see [Chord names](#chord-names).
