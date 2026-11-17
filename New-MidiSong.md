@@ -7,17 +7,16 @@
 
 This page is a collection of ready-to-run examples for both. For the full reference (every function, note names, chord types, instruments and drums), see the [README](README.md).
 
-> **Scripts blocked on Windows?** Every `./New-MidiSong.ps1 ...` example below also works as
-> `powershell -ExecutionPolicy Bypass -File .\New-MidiSong.ps1 ...`.
-> See [Calling it from anywhere](#calling-it-from-anywhere) and the README's [execution policy section](README.md#windows-running-scripts-is-disabled-on-this-system).
+Every example runs the script as `powershell -ExecutionPolicy Bypass -File .\New-MidiSong.ps1`. This works even when Windows blocks scripts (*"running scripts is disabled on this system"*), and changes nothing on your system. Run the examples from the folder that contains `New-MidiSong.ps1`. In PowerShell 7 you can type `pwsh` in place of `powershell`. If you've already allowed scripts (see the README's [execution policy section](README.md#windows-running-scripts-is-disabled-on-this-system)), the shorter `./New-MidiSong.ps1 ...` works too.
 
 ---
 
 ## Parameters at a glance
 
 ```powershell
-./New-MidiSong.ps1 [-OutputPath <file>] [-Tempo <20-300>] [-Seed <number>]
-                   [-Progression <chords>] [-Repeats <1-16>] [-NoDrums] [-LibraryOnly]
+powershell -ExecutionPolicy Bypass -File .\New-MidiSong.ps1
+    [-OutputPath <file>] [-Tempo <20-300>] [-Seed <number>]
+    [-Progression <chords>] [-Repeats <1-16>] [-NoDrums]
 ```
 
 | Parameter      | Default        | Description |
@@ -28,7 +27,7 @@ This page is a collection of ready-to-run examples for both. For the full refere
 | `-Progression` | `C,Am,F,G`     | Chords, one per bar. Separate them with commas or spaces. |
 | `-Repeats`     | `2`            | Times through the progression. |
 | `-NoDrums`     | off            | Leave out the drum track. |
-| `-LibraryOnly` | off            | Load the toolkit functions without writing a song. |
+| `-LibraryOnly` | off            | Load the toolkit functions without writing a song. Used with dot-sourcing, not with `-File` (see [Toolkit examples](#toolkit-examples--libraryonly)). |
 
 Each run prints what it made:
 
@@ -45,48 +44,48 @@ Wrote C:\scripts\midi\song.mid
 
 ```powershell
 # 1. Default song: C-Am-F-G at 110 BPM, random melody, saved as song.mid
-./New-MidiSong.ps1
+powershell -ExecutionPolicy Bypass -File .\New-MidiSong.ps1
 
 # 2. Choose the file name
-./New-MidiSong.ps1 -OutputPath my-first-song.mid
+powershell -ExecutionPolicy Bypass -File .\New-MidiSong.ps1 -OutputPath my-first-song.mid
 
 # 3. Faster and longer: 4 times through the progression at 140 BPM
-./New-MidiSong.ps1 -Tempo 140 -Repeats 4 -OutputPath longer.mid
+powershell -ExecutionPolicy Bypass -File .\New-MidiSong.ps1 -Tempo 140 -Repeats 4 -OutputPath longer.mid
 ```
 
 ### Styles and moods
 
 ```powershell
 # 4. Pop anthem (the I-V-vi-IV progression behind countless hits)
-./New-MidiSong.ps1 -Progression C,G,Am,F -Tempo 118 -Repeats 4 -OutputPath pop.mid
+powershell -ExecutionPolicy Bypass -File .\New-MidiSong.ps1 -Progression C,G,Am,F -Tempo 118 -Repeats 4 -OutputPath pop.mid
 
 # 5. Slow minor ballad, no drums
-./New-MidiSong.ps1 -Progression Am,F,C,G -Tempo 72 -NoDrums -OutputPath ballad.mid
+powershell -ExecutionPolicy Bypass -File .\New-MidiSong.ps1 -Progression Am,F,C,G -Tempo 72 -NoDrums -OutputPath ballad.mid
 
 # 6. Jazz ii-V-I turnaround with seventh chords
-./New-MidiSong.ps1 -Progression Dm7,G7,Cmaj7,A7 -Tempo 132 -Repeats 3 -OutputPath jazz.mid
+powershell -ExecutionPolicy Bypass -File .\New-MidiSong.ps1 -Progression Dm7,G7,Cmaj7,A7 -Tempo 132 -Repeats 3 -OutputPath jazz.mid
 
 # 7. 12-bar blues, twice through
-./New-MidiSong.ps1 -Progression C7,C7,C7,C7,F7,F7,C7,C7,G7,F7,C7,G7 -Tempo 100 -OutputPath blues.mid
+powershell -ExecutionPolicy Bypass -File .\New-MidiSong.ps1 -Progression C7,C7,C7,C7,F7,F7,C7,C7,G7,F7,C7,G7 -Tempo 100 -OutputPath blues.mid
 
 # 8. Dreamy, floating major-seventh chords
-./New-MidiSong.ps1 -Progression Fmaj7,Em7,Dm7,Cmaj7 -Tempo 84 -OutputPath dreamy.mid
+powershell -ExecutionPolicy Bypass -File .\New-MidiSong.ps1 -Progression Fmaj7,Em7,Dm7,Cmaj7 -Tempo 84 -OutputPath dreamy.mid
 
 # 9. Dark and dramatic, ending on a major chord for tension
-./New-MidiSong.ps1 -Progression Em,C,D,B7 -Tempo 96 -OutputPath dramatic.mid
+powershell -ExecutionPolicy Bypass -File .\New-MidiSong.ps1 -Progression Em,C,D,B7 -Tempo 96 -OutputPath dramatic.mid
 
 # 10. Folk / campfire in G with a suspended chord
-./New-MidiSong.ps1 -Progression G,Dsus4,Em,C -Tempo 104 -OutputPath folk.mid
+powershell -ExecutionPolicy Bypass -File .\New-MidiSong.ps1 -Progression G,Dsus4,Em,C -Tempo 104 -OutputPath folk.mid
 ```
 
 ### Other keys: sharps and flats
 
 ```powershell
 # 11. Flat key (B-flat major)
-./New-MidiSong.ps1 -Progression Bb,F,Gm,Eb -OutputPath b-flat.mid
+powershell -ExecutionPolicy Bypass -File .\New-MidiSong.ps1 -Progression Bb,F,Gm,Eb -OutputPath b-flat.mid
 
 # 12. Sharp key (F-sharp minor)
-./New-MidiSong.ps1 -Progression F#m,D,A,E -Tempo 124 -OutputPath f-sharp-minor.mid
+powershell -ExecutionPolicy Bypass -File .\New-MidiSong.ps1 -Progression F#m,D,A,E -Tempo 124 -OutputPath f-sharp-minor.mid
 ```
 
 The first chord sets the key: start with a minor chord for a minor-key melody.
@@ -95,17 +94,21 @@ The first chord sets the key: start with a minor chord for a minor-key melody.
 
 ```powershell
 # 13. Commas or spaces both work. Quote the progression if you use spaces.
-./New-MidiSong.ps1 -Progression Em,C,G,D
-./New-MidiSong.ps1 -Progression "Em C G D"
+powershell -ExecutionPolicy Bypass -File .\New-MidiSong.ps1 -Progression Em,C,G,D
+powershell -ExecutionPolicy Bypass -File .\New-MidiSong.ps1 -Progression "Em C G D"
 
-# 14. Keep progressions in variables
-$sad   = 'Am','F','C','G'
-$happy = 'C','G','Am','F'
-./New-MidiSong.ps1 -Progression $sad -OutputPath sad.mid
-./New-MidiSong.ps1 -Progression $happy -OutputPath happy.mid
+# 14. Keep progressions in variables. Store them as one comma-separated string.
+$sad   = 'Am,F,C,G'
+$happy = 'C,G,Am,F'
+powershell -ExecutionPolicy Bypass -File .\New-MidiSong.ps1 -Progression $sad -OutputPath sad.mid
+powershell -ExecutionPolicy Bypass -File .\New-MidiSong.ps1 -Progression $happy -OutputPath happy.mid
+
+# 14b. Already have a list of chords? Join it into one string first
+$chordList = 'Em','C','G','D'
+powershell -ExecutionPolicy Bypass -File .\New-MidiSong.ps1 -Progression ($chordList -join ',') -OutputPath from-list.mid
 
 # 15. Hold a chord for two bars by listing it twice
-./New-MidiSong.ps1 -Progression C,C,F,F,G,G,C,C -Repeats 1 -OutputPath held-chords.mid
+powershell -ExecutionPolicy Bypass -File .\New-MidiSong.ps1 -Progression C,C,F,F,G,G,C,C -Repeats 1 -OutputPath held-chords.mid
 ```
 
 ### Seeds: keeping a tune you like
@@ -114,13 +117,13 @@ Every run prints its seed. Pass the seed back in to get the same melody again:
 
 ```powershell
 # 16. Recreate a song exactly
-./New-MidiSong.ps1 -Seed 1234 -OutputPath keeper.mid
+powershell -ExecutionPolicy Bypass -File .\New-MidiSong.ps1 -Seed 1234 -OutputPath keeper.mid
 
 # 17. Same melody, different tempo
-./New-MidiSong.ps1 -Seed 1234 -Tempo 160 -OutputPath keeper-fast.mid
+powershell -ExecutionPolicy Bypass -File .\New-MidiSong.ps1 -Seed 1234 -Tempo 160 -OutputPath keeper-fast.mid
 
 # 18. Same melody, no drums
-./New-MidiSong.ps1 -Seed 1234 -NoDrums -OutputPath keeper-quiet.mid
+powershell -ExecutionPolicy Bypass -File .\New-MidiSong.ps1 -Seed 1234 -NoDrums -OutputPath keeper-quiet.mid
 ```
 
 Changing `-Progression` or `-Repeats` changes the melody even with the same seed, because the melody follows the chords.
@@ -129,11 +132,11 @@ Changing `-Progression` or `-Repeats` changes the melody even with the same seed
 
 ```powershell
 # 19. Five versions of the same progression, then pick your favorite
-1..5 | ForEach-Object { ./New-MidiSong.ps1 -Seed $_ -OutputPath "take-$_.mid" }
+1..5 | ForEach-Object { powershell -ExecutionPolicy Bypass -File .\New-MidiSong.ps1 -Seed $_ -OutputPath "take-$_.mid" }
 
 # 20. Same song at three tempos
 foreach ($bpm in 80, 110, 140) {
-    ./New-MidiSong.ps1 -Seed 77 -Tempo $bpm -OutputPath "tempo-$bpm.mid"
+    powershell -ExecutionPolicy Bypass -File .\New-MidiSong.ps1 -Seed 77 -Tempo $bpm -OutputPath "tempo-$bpm.mid"
 }
 
 # 21. One song per style, saved in a "songs" folder (the folder must exist)
@@ -145,28 +148,33 @@ $styles = @{
     dreamy = 'Fmaj7,Em7,Dm7,Cmaj7'
 }
 foreach ($name in $styles.Keys) {
-    ./New-MidiSong.ps1 -Progression $styles[$name] -OutputPath "songs/$name.mid"
+    powershell -ExecutionPolicy Bypass -File .\New-MidiSong.ps1 -Progression $styles[$name] -OutputPath "songs/$name.mid"
 }
 
 # 22. A random progression from a pool of chords that sound good together in C
 $pool  = 'C','Dm','Em','F','G','Am'
 $chords = @('C') + @(1..3 | ForEach-Object { $pool | Get-Random })   # always start on C
-./New-MidiSong.ps1 -Progression $chords -OutputPath random-chords.mid
+powershell -ExecutionPolicy Bypass -File .\New-MidiSong.ps1 -Progression ($chords -join ',') -OutputPath random-chords.mid
 ```
+
+> **Why `-join ','`?** `-File` starts a new PowerShell and hands it your options as plain text. A list stored in a variable arrives as separate words (`Am F C G`), and only the first one, `Am`, is read as the progression. The other chords get mistaken for other options, which gives errors such as *"Cannot convert value "F" to type System.Int32"*. Joining the list into one string (`'Am,F,C,G'`) keeps it together. Chords typed straight into the command, like `-Progression Am,F,C,G`, are fine as they are.
 
 ---
 
 ## Calling it from anywhere
 
 ```powershell
-# 23. Bypass the execution policy for one run (Windows PowerShell)
+# 23. Windows PowerShell (the standard form used throughout this page)
 powershell -ExecutionPolicy Bypass -File .\New-MidiSong.ps1 -Progression Am,F,C,G -Tempo 90
 
 # 24. Same thing in PowerShell 7
 pwsh -ExecutionPolicy Bypass -File .\New-MidiSong.ps1 -Progression Am,F,C,G -Tempo 90
 
-# 25. From another folder: give the full path to the script; the song lands in the current folder
-& 'C:\scripts\midi\New-MidiSong.ps1' -OutputPath tune.mid
+# 25. From another folder: give the full path to the script. The song is saved in the current folder.
+powershell -ExecutionPolicy Bypass -File C:\scripts\midi\New-MidiSong.ps1 -OutputPath tune.mid
+
+# 25b. Paths with spaces need quotes
+powershell -ExecutionPolicy Bypass -File "C:\My Scripts\midi\New-MidiSong.ps1" -OutputPath "C:\My Music\tune.mid"
 
 # 26. Built-in help (the examples written into the script)
 Get-Help .\New-MidiSong.ps1 -Examples
@@ -183,13 +191,22 @@ powershell -ExecutionPolicy Bypass -File C:\scripts\midi\New-MidiSong.ps1 -Progr
 
 ## Toolkit examples (`-LibraryOnly`)
 
-Load the functions once per PowerShell window. The leading dot and space matter:
+The toolkit is the one place where the `powershell -ExecutionPolicy Bypass -File` form doesn't work on its own. That form runs the script in a separate PowerShell that closes when it finishes, and the functions close with it. You have two choices.
+
+**Load the functions into your current window** to try things at the prompt. Allow scripts for this window, then load the toolkit. The leading dot and space matter:
 
 ```powershell
-. ./New-MidiSong.ps1 -LibraryOnly
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+. .\New-MidiSong.ps1 -LibraryOnly
 ```
 
-If scripts are blocked, run `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass` first.
+**Or save your song as a script file** and run it with the usual bypass form. Example 35 shows how:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\mysong.ps1
+```
+
+You can paste any of the examples below into such a file, below its first line.
 
 Every toolkit song follows the same four steps: `New-MidiSong` → `Add-MidiTrack` → `Add-MidiNote` / `Add-MidiChord` → `Save-MidiSong`. **Beats** count from 0 at the start of the song; in 4/4, bar *n* starts at beat `(n - 1) * 4`.
 
@@ -333,13 +350,31 @@ Run it again for a different tune. Put `Get-Random -SetSeed 42 | Out-Null` befor
 
 ### 35. A full song in its own script file
 
-For anything bigger, put the song in its own `.ps1` file next to `New-MidiSong.ps1`. The [rock song](ROCK-SONG.md) is built this way. Start the file with:
+For anything bigger, put the song in its own `.ps1` file next to `New-MidiSong.ps1`. The [rock song](ROCK-SONG.md) is built this way. Here's a complete one. Save it as `mysong.ps1`:
 
 ```powershell
+# mysong.ps1: load the toolkit from the same folder as this file
 . "$PSScriptRoot\New-MidiSong.ps1" -LibraryOnly
+
+$song  = New-MidiSong -Tempo 100 -Title 'My Song'
+$piano = Add-MidiTrack $song -Name 'Piano'
+$bass  = Add-MidiTrack $song -Name 'Bass' -Channel 1 -Instrument 33
+
+$bar = 0
+foreach ($chord in 'C','Am','F','G') {
+    Add-MidiChord $piano $chord -Beat ($bar * 4) -Length 4 -Octave 4
+    Add-MidiNote  $bass (Get-ChordNotes $chord -Octave 2)[0] -Beat ($bar * 4) -Length 4
+    $bar++
+}
+
+Save-MidiSong $song "$PSScriptRoot\mysong.mid"
 ```
 
-Then run it with `powershell -ExecutionPolicy Bypass -File .\mysong.ps1`.
+Then run it with the usual bypass form:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\mysong.ps1
+```
 
 > **Watch out for variable names.** Loading the toolkit sets the variables `$OutputPath`, `$Tempo`, `$Seed`, `$Progression`, `$Repeats`, `$NoDrums` and `$LibraryOnly` to the script's defaults. Create your own variables with those names *after* the dot-sourcing line, or use different names (such as `$bpm`).
 
